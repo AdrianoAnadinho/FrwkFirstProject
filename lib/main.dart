@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'Item.dart';
+
 void main() {
   runApp(const MyApp());
 }
@@ -7,7 +9,6 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -15,17 +16,21 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(
-        title: 'Flutter Demo Home Page',
-      ),
+      home: MyHomePage(),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
+  var items = <Item>[];
 
-  final String title;
+  MyHomePage() {
+    // items = [];
+    items.add(Item(done: true, title: 'levantou'));
+    items.add(Item(done: false, title: 'caiu'));
+    items.add(Item(done: true, title: 'subiu'));
+    items.add(Item(done: false, title: 'desceu'));
+  }
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
@@ -44,21 +49,16 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: Text('Home'),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
-          ],
-        ),
+      body: ListView.builder(
+        itemCount: widget.items.length,
+        itemBuilder: (context, index) {
+          return SizedBox(
+            height: 50,
+            child: Text(widget.items[index].title.toString()),
+          );
+        },
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _incrementCounter,
