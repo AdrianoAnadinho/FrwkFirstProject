@@ -37,12 +37,10 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
   TextEditingController nomeItemCont = TextEditingController();
 
   @override
-  Widget build(BuildContext context1) {
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Home'),
@@ -72,31 +70,52 @@ class _MyHomePageState extends State<MyHomePage> {
           showDialog(
             context: context,
             builder: (context) {
-              return AlertDialog(
-                actions: [
-                  TextButton(
-                    onPressed: () {
-                      setState(() {
-                        widget.items
-                            .add(Item(done: false, title: nomeItemCont.text));
-                        nomeItemCont.clear();
-                        Navigator.of(context).pop();
-                        ScaffoldMessenger.of(context1).showSnackBar(
-                          SnackBar(
-                            backgroundColor: Colors.green,
-                            content: Text('Item inserido com sucesso'),
-                          ),
-                        );
-                      });
-                    },
-                    child: Text('Add'),
+              return Stack(
+                children: [
+                  IgnorePointer(
+                      child: Scaffold(backgroundColor: Colors.transparent)),
+                  AlertDialog(
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          if (nomeItemCont.text.isNotEmpty) {
+                            setState(() {
+                              widget.items.add(
+                                  Item(done: false, title: nomeItemCont.text));
+                              nomeItemCont.clear();
+                              Navigator.of(context).pop();
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  backgroundColor: Colors.green,
+                                  content: Text('Item inserido com sucesso'),
+                                ),
+                              );
+                            });
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                backgroundColor: Colors.red,
+                                content:
+                                    Text('Não foi possível inserir o item'),
+                              ),
+                            );
+                          }
+                        },
+                        child: Text('Add'),
+                      )
+                    ],
+                    title: Text('Adicione um item'),
+                    content: TextFormField(
+                      validator: (value) {
+                        if (value == null) {
+                          return 'Informe um nome';
+                        }
+                      },
+                      controller: nomeItemCont,
+                      decoration: InputDecoration(labelText: 'Nome do item'),
+                    ),
                   )
                 ],
-                title: Text('Adicione um item'),
-                content: TextFormField(
-                  controller: nomeItemCont,
-                  decoration: InputDecoration(labelText: 'Nome do item'),
-                ),
               );
             },
           );
