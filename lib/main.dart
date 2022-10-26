@@ -49,14 +49,21 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Home'),
+        title: const Text('Home'),
       ),
       body: ListView.builder(
         itemCount: widget.items.length,
         itemBuilder: (context, index) {
+          final item = widget.items[index];
+
           return SizedBox(
             height: 50,
-            child: Text(widget.items[index].title.toString()),
+            child: CheckboxListTile(
+              title: Text(item.title.toString()),
+              value: item.done,
+              onChanged: (value) {},
+              key: Key(item.title.toString()),
+            ),
           );
         },
       ),
