@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'Item.dart';
 
@@ -26,10 +29,10 @@ class MyHomePage extends StatefulWidget {
 
   MyHomePage() {
     // items = [];
-    items.add(Item(done: true, title: 'levantou'));
-    items.add(Item(done: false, title: 'caiu'));
-    items.add(Item(done: true, title: 'subiu'));
-    items.add(Item(done: false, title: 'desceu'));
+    // items.add(Item(done: true, title: 'levantou'));
+    // items.add(Item(done: false, title: 'caiu'));
+    // items.add(Item(done: true, title: 'subiu'));
+    // items.add(Item(done: false, title: 'desceu'));
   }
 
   @override
@@ -38,6 +41,30 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   TextEditingController nomeItemCont = TextEditingController();
+
+  Future load() async {
+    var prefs = await SharedPreferences.getInstance();
+
+    var data = prefs.getString('data');
+
+    if (data != null) {
+      Iterable decoded = jsonDecode(data);
+      List<Item> result = decoded.map((e) => Item.fromJson(e)).toList();
+
+      setState(() {
+        widget.items = result;
+      });
+    }
+  }
+
+  Future save() async {
+    var prefs = await SharedPreferences.getInstance();
+    await prefs.setString('data', jsonEncode(widget.items));
+  }
+
+  _MyHomePageState() {
+    load();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -58,6 +85,7 @@ class _MyHomePageState extends State<MyHomePage> {
               setState(() {
                 widget.items.removeAt(index);
               });
+              save();
             },
             key: UniqueKey(),
             child: CheckboxListTile(
@@ -99,6 +127,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                 ),
                               );
                             });
+                            save();
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
