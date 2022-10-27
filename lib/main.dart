@@ -51,13 +51,15 @@ class _MyHomePageState extends State<MyHomePage> {
           final item = widget.items[index];
 
           return Dismissible(
+            background: Container(
+              color: Colors.grey[250],
+            ),
             onDismissed: (direction) {
               setState(() {
-                print(index);
                 widget.items.removeAt(index);
               });
             },
-            key: Key('dis'),
+            key: UniqueKey(),
             child: CheckboxListTile(
               title: Text(item.title.toString()),
               value: item.done,
