@@ -50,8 +50,14 @@ class _MyHomePageState extends State<MyHomePage> {
         itemBuilder: (context, index) {
           final item = widget.items[index];
 
-          return SizedBox(
-            // height: 50,
+          return Dismissible(
+            onDismissed: (direction) {
+              setState(() {
+                print(index);
+                widget.items.removeAt(index);
+              });
+            },
+            key: Key('dis'),
             child: CheckboxListTile(
               title: Text(item.title.toString()),
               value: item.done,
@@ -106,11 +112,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     ],
                     title: Text('Adicione um item'),
                     content: TextFormField(
-                      validator: (value) {
-                        if (value == null) {
-                          return 'Informe um nome';
-                        }
-                      },
+                      validator: (value) {},
                       controller: nomeItemCont,
                       decoration: InputDecoration(labelText: 'Nome do item'),
                     ),
