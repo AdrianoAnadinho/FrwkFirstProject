@@ -2,7 +2,10 @@ class Item {
   String? title;
   bool? done;
 
-  Item({this.title, this.done});
+  Item({
+    required this.title,
+    required this.done,
+  });
 
   Item.fromJson(Map<String, dynamic> json) {
     title = json['title'];
@@ -11,8 +14,10 @@ class Item {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
+
     data['title'] = title;
     data['done'] = done;
+
     return data;
   }
 }
