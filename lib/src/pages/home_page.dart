@@ -14,7 +14,7 @@ class _HomePageState extends State<HomePage> {
   //init state
   @override
   void initState() {
-    load();
+    _load();
     super.initState();
   }
 
@@ -23,7 +23,7 @@ class _HomePageState extends State<HomePage> {
   var items = <Item>[];
 
   //methods
-  Future load() async {
+  Future _load() async {
     var prefs = await SharedPreferences.getInstance();
 
     var data = prefs.getString('data');
@@ -37,7 +37,7 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  Future save() async {
+  Future _save() async {
     var prefs = await SharedPreferences.getInstance();
 
     await prefs.setString('data', jsonEncode(items));
@@ -58,11 +58,11 @@ class _HomePageState extends State<HomePage> {
           return itemWidget(index, item);
         },
       ),
-      floatingActionButton: buttonWidget(context),
+      floatingActionButton: _buttonWidget(context),
     );
   }
 
-  FloatingActionButton buttonWidget(BuildContext context) {
+  FloatingActionButton _buttonWidget(BuildContext context) {
     return FloatingActionButton(
       onPressed: () {
         showDialog(
@@ -74,7 +74,7 @@ class _HomePageState extends State<HomePage> {
                     child: Scaffold(backgroundColor: Colors.transparent)),
                 AlertDialog(
                   actions: [
-                    botaoTexto(context),
+                    _textButton(context),
                   ],
                   title: const Text('Adicione um item'),
                   content: TextFormField(
@@ -101,7 +101,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  TextButton botaoTexto(BuildContext context) {
+  TextButton _textButton(BuildContext context) {
     return TextButton(
       onPressed: () {
         if (nomeItemCont.text.isNotEmpty) {
@@ -116,7 +116,7 @@ class _HomePageState extends State<HomePage> {
               ),
             );
           });
-          save();
+          _save();
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
@@ -139,14 +139,14 @@ class _HomePageState extends State<HomePage> {
         setState(() {
           items.removeAt(index);
         });
-        save();
+        _save();
       },
       key: UniqueKey(),
       child: CheckboxListTile(
         title: Text(item.title.toString()),
         value: item.done,
         onChanged: (value) {
-          save();
+          _save();
           setState(() {
             item.done = value;
           });
