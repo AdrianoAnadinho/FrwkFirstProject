@@ -55,7 +55,7 @@ class _HomePageState extends State<HomePage> {
         itemBuilder: (context, index) {
           final item = items[index];
 
-          return itemWidget(index, item);
+          return _itemWidget(index, item);
         },
       ),
       floatingActionButton: _buttonWidget(context),
@@ -130,7 +130,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Dismissible itemWidget(int index, Item item) {
+  Dismissible _itemWidget(int index, Item item) {
     return Dismissible(
       background: Container(
         color: Colors.grey[350],
