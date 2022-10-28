@@ -39,6 +39,7 @@ class _HomePageState extends State<HomePage> {
 
   Future save() async {
     var prefs = await SharedPreferences.getInstance();
+
     await prefs.setString('data', jsonEncode(items));
   }
 
@@ -57,68 +58,82 @@ class _HomePageState extends State<HomePage> {
           return itemWidget(index, item);
         },
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          showDialog(
-            context: context,
-            builder: (context) {
-              return Stack(
-                children: [
-                  const IgnorePointer(
-                      child: Scaffold(backgroundColor: Colors.transparent)),
-                  AlertDialog(
-                    actions: [
-                      TextButton(
-                        onPressed: () {
-                          if (nomeItemCont.text.isNotEmpty) {
-                            setState(() {
-                              items.add(
-                                  Item(done: false, title: nomeItemCont.text));
-                              nomeItemCont.clear();
-                              Navigator.of(context).pop();
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  backgroundColor: Colors.green,
-                                  content: Text('Item inserido com sucesso'),
-                                ),
-                              );
-                            });
-                            save();
-                          } else {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                backgroundColor: Colors.red,
-                                content:
-                                    Text('Não foi possível inserir o item'),
-                              ),
-                            );
-                          }
-                        },
-                        child: const Text('Add'),
-                      )
-                    ],
-                    title: Text('Adicione um item'),
-                    content: TextFormField(
-                      validator: (value) {},
-                      controller: nomeItemCont,
-                      decoration: InputDecoration(labelText: 'Nome do item'),
+      floatingActionButton: buttonWidget(context),
+    );
+  }
+
+  FloatingActionButton buttonWidget(BuildContext context) {
+    return FloatingActionButton(
+      onPressed: () {
+        showDialog(
+          context: context,
+          builder: (context) {
+            return Stack(
+              children: [
+                const IgnorePointer(
+                    child: Scaffold(backgroundColor: Colors.transparent)),
+                AlertDialog(
+                  actions: [
+                    botaoTexto(context),
+                  ],
+                  title: const Text('Adicione um item'),
+                  content: TextFormField(
+                    validator: (value) {
+                      if (value != null && value.isEmpty) {
+                        return 'Preencher ';
+                      } else {
+                        return '';
+                      }
+                    },
+                    controller: nomeItemCont,
+                    decoration: const InputDecoration(
+                      labelText: 'Nome do item',
                     ),
-                  )
-                ],
-              );
-            },
+                  ),
+                )
+              ],
+            );
+          },
+        );
+      },
+      tooltip: 'Increment',
+      child: const Icon(Icons.add),
+    );
+  }
+
+  TextButton botaoTexto(BuildContext context) {
+    return TextButton(
+      onPressed: () {
+        if (nomeItemCont.text.isNotEmpty) {
+          setState(() {
+            items.add(Item(done: false, title: nomeItemCont.text));
+            nomeItemCont.clear();
+            Navigator.of(context).pop();
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                backgroundColor: Colors.green,
+                content: Text('Item inserido com sucesso'),
+              ),
+            );
+          });
+          save();
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              backgroundColor: Colors.red,
+              content: Text('Não foi possível inserir o item'),
+            ),
           );
-        },
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ),
+        }
+      },
+      child: const Text('Add'),
     );
   }
 
   Dismissible itemWidget(int index, Item item) {
     return Dismissible(
       background: Container(
-        color: Colors.grey[250],
+        color: Colors.grey[350],
       ),
       onDismissed: (direction) {
         setState(() {
